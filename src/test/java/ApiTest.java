@@ -1,3 +1,4 @@
+import cn.hutool.core.io.IoUtil;
 import org.junit.Before;
 import org.junit.Test;
 import top.jxau.*;
@@ -5,14 +6,23 @@ import top.jxau.support.bean.BeanDefinition;
 import top.jxau.support.bean.BeanReference;
 import top.jxau.support.bean.PropertyValue;
 import top.jxau.support.bean.PropertyValues;
+import top.jxau.support.core.io.Resource;
+import top.jxau.support.core.io.loader.DefaultResourceLoader;
 import top.jxau.support.factory.impl.DefaultBeanFactory;
+import top.jxau.support.xml.XmlBeanDefinitionReader;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 public class ApiTest {
+
     DefaultBeanFactory beanFactory = null;
+    DefaultResourceLoader resourceLoader = null;
 
     @Before
     public void before() {
         beanFactory = new DefaultBeanFactory();
+        resourceLoader = new DefaultResourceLoader();
     }
 
     @Test
@@ -53,6 +63,49 @@ public class ApiTest {
         System.out.println("a1: {[hashcode: " + a1.hashCode() + "] b: {[hashcode: " + a1.getB().hashCode() + "]" + c + "}}");
         System.out.println("a2: {[hashcode: " + b1.hashCode() + "] a: {[hashcode: " + b1.getA().hashCode() + "]" + c + "}}");
         System.out.println("c1: {[username: " + c1.getUsername() + "] a: {[password: " + c1.getPassword() + "]}}");
+    }
+
+    @Test
+    public void test_04() throws IOException {
+        Resource resource = resourceLoader.getResource("classpath:spring.xml");
+        InputStream inputStream = resource.getInputStream();
+        String content = IoUtil.readUtf8(inputStream);
+        System.out.println(content);
+    }
+
+    @Test
+    public void test_05() throws IOException {
+        Resource resource = resourceLoader.getResource("src/test/resources/important.properties");
+        InputStream inputStream = resource.getInputStream();
+        String content = IoUtil.readUtf8(inputStream);
+        System.out.println(content);
+    }
+
+    @Test
+    public void test_06() throws IOException {
+        Resource resource = resourceLoader.getResource("https://github.com/jxau-hujin/simple_spring/important.properties");
+        InputStream inputStream = resource.getInputStream();
+        String content = IoUtil.readUtf8(inputStream);
+        System.out.println(content);
+    }
+
+    @Test
+    public void test_07() {
+        // 2. 读取配置文件&注册Bean
+        XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(beanFactory);
+        reader.loadBeanDefinitions("classpath:spring.xml");
+
+        // 3. 获取Bean对象调用方法
+        A a = beanFactory.getBean("A", A.class);
+        System.out.println("A: " + a.hashCode() + " A.B: " + a.getB().hashCode() + " A.token: " + a.getToken());
+        B b = beanFactory.getBean("B", B.class);
+        System.out.println("B: " + b.hashCode() + " B.A: " + b.getA().hashCode() + " B.token: " + b.getToken());
+        C c = beanFactory.getBean("C", C.class);
+        System.out.println("C: " + c.hashCode() + " username: " + c.getUsername() + " password: " + c.getPassword());
+        User user = beanFactory.getBean("user", User.class);
+        System.out.println("user: " + user.hashCode() + " username: " + user.getUsername() + " password: " + user.getPassword());
+        UserService userService = beanFactory.getBean("userService", UserService.class);
+        userService.queryUserInfo();
     }
 
     private PropertyValues initCPropertyValues() {

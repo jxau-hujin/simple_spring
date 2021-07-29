@@ -2,7 +2,6 @@ package top.jxau.support.factory;
 
 
 import top.jxau.support.bean.BeanDefinition;
-import top.jxau.BeanFactory;
 import top.jxau.registry.impl.DefaultSingletonBeanRegistry;
 
 /**

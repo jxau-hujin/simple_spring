@@ -62,3 +62,19 @@
         // TODO
     新增类对象说明：
         // TODO
+
+## 0.5-SNAPSHOT
+
+    概述：支持多种 Resource 资源文件加载，再也不用使用代码编码定义 Bean 对象，丰富资源配置文件来源途径（ClassPath、URL、FileSystem)
+
+    优化：
+        1. 暂无
+    新增：
+        1. 新增 Resource 资源对象，引入 ClassPath、URL、FileSystem，新增 BeanDefinitionReader 接口，目前支持 XML 文件解析
+    待修复:
+        1. 当类重写构造方法后，可能导致使用默认构造器 Bean 对象报错
+
+    本次改动设计类图：
+        // TODO
+    新增类对象说明：
+        // TODO

@@ -22,6 +22,11 @@ public class DefaultBeanFactory extends AbstractAutowireBeanFactory implements B
     }
 
     @Override
+    public boolean containsBeanDefinition(String beanName) {
+        return beanDefinitionMap.containsKey(beanName);
+    }
+
+    @Override
     public BeanDefinition getBeanDefinition(String beanName) {
         BeanDefinition beanDefinition = beanDefinitionMap.get(beanName);
         if(beanDefinition == null) {
