@@ -1,4 +1,4 @@
-package top.jxau;
+package top.jxau.support.factory;
 
 /**
  * @author plutohh
