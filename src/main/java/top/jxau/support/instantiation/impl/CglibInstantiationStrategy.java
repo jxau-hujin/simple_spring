@@ -2,7 +2,7 @@ package top.jxau.support.instantiation.impl;
 
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.NoOp;
-import top.jxau.BeanDefinition;
+import top.jxau.support.bean.BeanDefinition;
 import top.jxau.support.instantiation.InstantiationStrategy;
 
 import java.lang.reflect.Constructor;

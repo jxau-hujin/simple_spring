@@ -1,6 +1,6 @@
 package top.jxau.support.instantiation.impl;
 
-import top.jxau.BeanDefinition;
+import top.jxau.support.bean.BeanDefinition;
 import top.jxau.exceptions.BeansException;
 import top.jxau.support.instantiation.InstantiationStrategy;
 

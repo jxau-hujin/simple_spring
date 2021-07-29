@@ -1,12 +1,17 @@
 package top.jxau.support.factory;
 
-import com.sun.tools.internal.jxc.ap.Const;
-import top.jxau.BeanDefinition;
+import cn.hutool.core.bean.BeanUtil;
+import top.jxau.support.bean.BeanDefinition;
 import top.jxau.exceptions.BeansException;
+import top.jxau.support.bean.BeanReference;
+import top.jxau.support.bean.PropertyValue;
+import top.jxau.support.bean.PropertyValues;
 import top.jxau.support.instantiation.InstantiationStrategy;
 import top.jxau.support.instantiation.impl.CglibInstantiationStrategy;
 
 import java.lang.reflect.Constructor;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author plutohh
@@ -15,11 +20,14 @@ public abstract class AbstractAutowireBeanFactory extends AbstractBeanFactory{
 
     private InstantiationStrategy instantiationStrategy = new CglibInstantiationStrategy();
 
+    private Map<String, Object> semiBeanMap = new HashMap<>();
+
     @Override
     protected <T> T createBean(String beanName, BeanDefinition beanDefinition, Object[] args) {
         Object bean = null;
         try {
             bean = createBeanInstance(beanName, beanDefinition, args);
+            fillPropertyValues(beanName, bean, beanDefinition);
         } catch (Exception e) {
             throw new BeansException("Instantiation of bean failed: ", e);
         }
@@ -27,8 +35,41 @@ public abstract class AbstractAutowireBeanFactory extends AbstractBeanFactory{
         return (T) bean;
     }
 
+    private void fillPropertyValues(String beanName, Object bean, BeanDefinition beanDefinition) {
+        try {
+            PropertyValues propertyValues = beanDefinition.getPropertyValues();
+            if(propertyValues == null || propertyValues.getPropertyValues() == null || propertyValues.getPropertyValues().length < 1) {
+                return;
+            }
+            for(PropertyValue propertyValue : propertyValues.getPropertyValues()) {
+
+                String key = propertyValue.getKey();
+                Object value = propertyValue.getValue();
+
+                if(value instanceof BeanReference) {
+                    BeanReference beanReference = (BeanReference) value;
+                    String circleBeanName = beanReference.getBeanName();
+                    // 防止循环依赖
+                    value = semiBeanMap.get(circleBeanName);
+                    if(value == null) {
+                        semiBeanMap.put(circleBeanName, createBeanInstance(beanReference.getBeanName(), getBeanDefinition(beanReference.getBeanName()), null));
+                        value = getBean(circleBeanName);
+                    }
+                }
+
+                BeanUtil.setFieldValue(bean, key, value);
+            }
+        } catch (Exception e) {
+            throw new BeansException("Error setting property values：" + beanName);
+        }
+    }
+
     private Object createBeanInstance(String beanName, BeanDefinition beanDefinition, Object[] args) throws NoSuchMethodException {
 
+        // 存在中间对象直接返回
+        if (semiBeanMap.containsKey(beanName)) {
+            return semiBeanMap.get(beanName);
+        }
         Constructor constructorToUse = null;
 
         if(args != null && args.length > 0) {
@@ -41,8 +82,12 @@ public abstract class AbstractAutowireBeanFactory extends AbstractBeanFactory{
                 }
             }
         }
-
-        return instantiationStrategy.instantiate(beanName, beanDefinition, constructorToUse, args);
+        // 缓存中间对象
+        Object instantiate = instantiationStrategy.instantiate(beanName, beanDefinition, constructorToUse, args);
+        if(!semiBeanMap.containsKey(beanName)) {
+            semiBeanMap.put(beanName, instantiate);
+        }
+        return instantiate;
     }
 
     private boolean argsMatchConstructor(Constructor constructor, Object[] args) {
