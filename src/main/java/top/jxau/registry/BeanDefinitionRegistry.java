@@ -1,6 +1,6 @@
 package top.jxau.registry;
 
-import top.jxau.BeanDefinition;
+import top.jxau.support.bean.BeanDefinition;
 
 /**
  * @author plutohh

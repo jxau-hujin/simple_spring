@@ -1,6 +1,6 @@
 package top.jxau.support.instantiation;
 
-import top.jxau.BeanDefinition;
+import top.jxau.support.bean.BeanDefinition;
 
 import java.lang.reflect.Constructor;
 
