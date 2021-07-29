@@ -1,4 +1,4 @@
-package top.jxau.support;
+package top.jxau.support.factory;
 
 
 import top.jxau.BeanDefinition;
@@ -10,16 +10,24 @@ import top.jxau.registry.impl.DefaultSingletonBeanRegistry;
  */
 public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry implements BeanFactory {
 
+    @Override
+    public <T> T getBean(String beanName, Object... args) {
+        return doGetBean(beanName, args);
+    }
 
     @Override
     public <T> T getBean(String beanName) {
-        T bean = getSingleton(beanName);
+        return doGetBean(beanName, null);
+    }
+
+    protected <T> T doGetBean(String beanName, Object[] args) {
+        Object bean = getSingleton(beanName);
         if(bean != null) {
-            return bean;
+            return (T) bean;
         }
 
         BeanDefinition beanDefinition = getBeanDefinition(beanName);
-        return createBean(beanName, beanDefinition);
+        return createBean(beanName, beanDefinition, args);
     }
 
     /**
@@ -33,9 +41,10 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
      * 创建 Bean 对象
      * @param beanName
      * @param beanDefinition
+     * @param args
      * @return
      */
-    protected abstract <T> T createBean(String beanName, BeanDefinition beanDefinition);
+    protected abstract <T> T createBean(String beanName, BeanDefinition beanDefinition, Object[] args);
 
 
 }
