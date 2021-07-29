@@ -5,13 +5,13 @@ package top.jxau;
  */
 public class BeanDefinition {
 
-    private Object bean;
+    private Class beanClass;
 
-    public BeanDefinition(Object bean) {
-        this.bean = bean;
+    public BeanDefinition(Class beanClass) {
+        this.beanClass = beanClass;
     }
 
-    public Object getBean() {
-        return bean;
+    public Class getBeanClass() {
+        return beanClass;
     }
 }

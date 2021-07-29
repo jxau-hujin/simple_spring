@@ -1,19 +1,19 @@
 import org.junit.Test;
 import top.jxau.BeanDefinition;
-import top.jxau.BeanFactory;
 import top.jxau.UserService;
+import top.jxau.support.impl.DefaultBeanFactory;
 
 public class ApiTest {
 
 
     @Test
     public void test_01() {
-        BeanFactory beanFactory = new BeanFactory();
+        DefaultBeanFactory beanFactory = new DefaultBeanFactory();
 
-        BeanDefinition beanDefinition = new BeanDefinition(new UserService());
+        BeanDefinition beanDefinition = new BeanDefinition(UserService.class);
         beanFactory.registerBeanDefinition("userService", beanDefinition);
 
-        UserService userService = (UserService) beanFactory.getBean("userService");
+        UserService userService = beanFactory.getBean("userService");
         userService.queryUserInfo();
     }
 }
