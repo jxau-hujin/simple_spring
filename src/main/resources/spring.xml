@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans>
+
+    <bean id="A" class="top.jxau.A">
+        <property name="b" ref="B"/>
+        <property name="c" ref="C"/>
+        <property name="token" value="offer"/>
+    </bean>
+
+    <bean id="B" class="top.jxau.B">
+        <property name="a" ref="A"/>
+        <property name="c" ref="C"/>
+        <property name="token" value="show"/>
+    </bean>
+
+    <bean id="C" class="top.jxau.C">
+        <property name="username" value="alibaba"/>
+        <property name="password" value="bytedance"/>
+    </bean>
+
+    <bean id="user" class="top.jxau.User">
+        <property name="username" value="tencent"/>
+        <property name="password" value="jd"/>
+    </bean>
+
+    <bean id="userService" class="top.jxau.UserService" />
+
+</beans>
