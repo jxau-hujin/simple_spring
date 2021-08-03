@@ -142,13 +142,21 @@ public class ApiTest {
     @Test
     public void test_11() {
         ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:spring.xml");
-        applicationContext.registerShutdownHook();
 
         UserDao userDao = applicationContext.getBean("userDao", UserDao.class);
         System.out.println(userDao.queryUserName("10001"));
         System.out.println(userDao.queryUserName("10002"));
         System.out.println(userDao.queryUserName("10003"));
 
+    }
+
+    @Test
+    public void test_12() {
+        ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:spring.xml");
+
+
+        AwareBean awareBean = applicationContext.getBean("awareBean", AwareBean.class);
+        System.out.println(awareBean.toString());
     }
 
     private PropertyValues initCPropertyValues() {

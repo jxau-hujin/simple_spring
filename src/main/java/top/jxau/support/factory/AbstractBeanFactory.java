@@ -4,6 +4,7 @@ package top.jxau.support.factory;
 import top.jxau.support.bean.BeanDefinition;
 import top.jxau.registry.impl.DefaultSingletonBeanRegistry;
 import top.jxau.support.processor.BeanPostProcessor;
+import top.jxau.utils.ClassUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +13,8 @@ import java.util.List;
  * @author plutohh
  */
 public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry implements ConfigurableBeanFactory {
+
+    private ClassLoader beanClassLoader = ClassUtils.getDefaultClassLoader();
 
     private final List<BeanPostProcessor> beanPostProcessorList = new ArrayList<>();
 
@@ -64,5 +67,9 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
 
     public List<BeanPostProcessor> getBeanPostProcessors() {
         return this.beanPostProcessorList;
+    }
+
+    public ClassLoader getBeanClassLoader() {
+        return this.beanClassLoader;
     }
 }

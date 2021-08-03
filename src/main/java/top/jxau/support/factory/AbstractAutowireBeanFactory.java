@@ -50,7 +50,17 @@ public abstract class AbstractAutowireBeanFactory extends AbstractBeanFactory im
 
 
     private Object initializeBean(String beanName, Object bean, BeanDefinition beanDefinition) {
-
+        if(bean instanceof Aware) {
+            if(bean instanceof BeanFactoryAware) {
+                ((BeanFactoryAware)bean).setBeanFactory(this);
+            }
+            if(bean instanceof BeanNameAware) {
+                ((BeanNameAware)bean).setBeanName(beanName);
+            }
+            if(bean instanceof BeanClassLoaderAware) {
+                ((BeanClassLoaderAware)bean).setBeanClassLoader(getBeanClassLoader());
+            }
+        }
         Object wrappedBean = applyBeanPostProcessorsBeforeInitialization(bean, beanName);
         try {
             invokeInitMethods(beanName, wrappedBean, beanDefinition);

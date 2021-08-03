@@ -5,6 +5,7 @@ import top.jxau.support.bean.BeanDefinition;
 import top.jxau.support.context.ConfigurableApplicationContext;
 import top.jxau.support.core.io.loader.DefaultResourceLoader;
 import top.jxau.support.factory.ConfigurableListableBeanFactory;
+import top.jxau.support.processor.ApplicationContextAwareProcessor;
 import top.jxau.support.processor.BeanFactoryPostProcessor;
 import top.jxau.support.processor.BeanPostProcessor;
 
@@ -25,6 +26,8 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
         invokeBeanFactoryPostProcessors(beanFactory);
 
         registerBeanPostProcessors(beanFactory);
+
+        beanFactory.addBeanPostProcessor(new ApplicationContextAwareProcessor(this));
 
         beanFactory.preInstantiateSingletons();
     }

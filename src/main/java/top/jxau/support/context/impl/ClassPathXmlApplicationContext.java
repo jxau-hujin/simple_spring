@@ -21,6 +21,7 @@ public class ClassPathXmlApplicationContext extends AbstractXmlApplicationContex
      */
     public ClassPathXmlApplicationContext(String configLocations) throws BeansException {
         this(new String[]{configLocations});
+        this.registerShutdownHook();
     }
 
     /**
