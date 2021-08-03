@@ -25,4 +25,6 @@
 
     <bean id="userService" class="top.jxau.UserService" />
 
+
+    <bean id="userDao" class="top.jxau.UserDao" init-method="init" destroy-method="destroy"/>
 </beans>

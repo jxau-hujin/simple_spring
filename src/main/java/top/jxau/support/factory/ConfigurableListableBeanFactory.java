@@ -1,7 +1,5 @@
 package top.jxau.support.factory;
 
-import top.jxau.exceptions.BeansException;
-
 /**
  * @author plutohh
  */

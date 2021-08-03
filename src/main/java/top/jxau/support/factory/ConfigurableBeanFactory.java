@@ -20,4 +20,9 @@ public interface ConfigurableBeanFactory extends BeanFactory, SingletonBeanRegis
      * @throws BeansException
      */
     void preInstantiateSingletons() throws BeansException;
+
+    /**
+     * 销毁单例对象
+     */
+    void destroySingletons();
 }
