@@ -134,6 +134,23 @@ public class ApiTest {
         System.out.println(user);
     }
 
+    @Test
+    public void test_10() {
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> System.out.println("close！")));
+    }
+
+    @Test
+    public void test_11() {
+        ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:spring.xml");
+        applicationContext.registerShutdownHook();
+
+        UserDao userDao = applicationContext.getBean("userDao", UserDao.class);
+        System.out.println(userDao.queryUserName("10001"));
+        System.out.println(userDao.queryUserName("10002"));
+        System.out.println(userDao.queryUserName("10003"));
+
+    }
+
     private PropertyValues initCPropertyValues() {
 
         PropertyValues propertyValues = new PropertyValues();

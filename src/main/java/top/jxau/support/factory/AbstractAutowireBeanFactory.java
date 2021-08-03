@@ -1,16 +1,18 @@
 package top.jxau.support.factory;
 
 import cn.hutool.core.bean.BeanUtil;
-import top.jxau.support.bean.BeanDefinition;
+import cn.hutool.core.util.StrUtil;
+import com.sun.org.apache.xml.internal.security.Init;
+import org.apache.commons.lang3.StringUtils;
+import top.jxau.support.bean.*;
 import top.jxau.exceptions.BeansException;
-import top.jxau.support.bean.BeanReference;
-import top.jxau.support.bean.PropertyValue;
-import top.jxau.support.bean.PropertyValues;
 import top.jxau.support.instantiation.InstantiationStrategy;
 import top.jxau.support.instantiation.impl.CglibInstantiationStrategy;
 import top.jxau.support.processor.BeanPostProcessor;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,21 +35,50 @@ public abstract class AbstractAutowireBeanFactory extends AbstractBeanFactory im
         } catch (Exception e) {
             throw new BeansException("Instantiation of bean failed: ", e);
         }
+
+        registerDisposableBeanIfNecessary(beanName, bean, beanDefinition);
+
         addSingleton(beanName, bean);
         return (T) bean;
     }
 
+    protected void registerDisposableBeanIfNecessary(String beanName, Object bean, BeanDefinition beanDefinition) {
+        if (bean instanceof DisposableBean || StrUtil.isNotEmpty(beanDefinition.getDestroyMethodName())) {
+            registerDisposableBean(beanName, new DisposableBeanAdapter(bean, beanName, beanDefinition));
+        }
+    }
+
+
     private Object initializeBean(String beanName, Object bean, BeanDefinition beanDefinition) {
 
         Object wrappedBean = applyBeanPostProcessorsBeforeInitialization(bean, beanName);
-        invokeInitMethods(beanName, wrappedBean, beanDefinition);
+        try {
+            invokeInitMethods(beanName, wrappedBean, beanDefinition);
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
         wrappedBean = applyBeanPostProcessorsAfterInitialization(bean, beanName);
 
         return wrappedBean;
     }
 
-    private void invokeInitMethods(String beanName, Object wrappedBean, BeanDefinition beanDefinition) {
-        // TODO
+    private void invokeInitMethods(String beanName, Object wrappedBean, BeanDefinition beanDefinition) throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
+        if(wrappedBean instanceof InitializingBean) {
+            ((InitializingBean)(wrappedBean)).afterPropertiesSet();
+        }
+
+        String initMethodName = beanDefinition.getInitMethodName();
+        if(StringUtils.isNotBlank(initMethodName)) {
+            Method method = beanDefinition.getBeanClass().getMethod(initMethodName);
+            if(method == null) {
+                throw new BeansException("Could not find an init method named '" + initMethodName + "' on bean with name '" + beanName + "'");
+            }
+            method.invoke(wrappedBean);
+        }
     }
 
     @Override

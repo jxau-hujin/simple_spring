@@ -55,6 +55,15 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
      */
     protected abstract void refreshBeanFactory();
 
+    @Override
+    public void registerShutdownHook() {
+        Runtime.getRuntime().addShutdownHook(new Thread(this::close));
+    }
+
+    @Override
+    public void close() {
+        getBeanFactory().destroySingletons();
+    }
 
     @Override
     public <T> Map<String, T> getBeanOfType(Class<T> type) throws BeansException {
