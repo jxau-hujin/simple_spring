@@ -34,4 +34,9 @@ public class DefaultBeanFactory extends AbstractAutowireBeanFactory implements B
         }
         return beanDefinition;
     }
+
+    @Override
+    public void preInstantiateSingletons() throws BeansException {
+        beanDefinitionMap.keySet().forEach(this::getBean);
+    }
 }

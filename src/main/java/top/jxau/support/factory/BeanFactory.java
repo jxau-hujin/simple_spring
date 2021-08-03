@@ -20,4 +20,13 @@ public interface BeanFactory {
      * @return
      */
     <T> T getBean(String beanName, Object... args);
+
+    /**
+     * 根据 requiredType 获取 bean
+     * @param beanName
+     * @param requiredType
+     * @param <T>
+     * @return
+     */
+    <T> T getBean(String beanName, Class<T> requiredType);
 }

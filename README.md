@@ -78,3 +78,19 @@
         // TODO
     新增类对象说明：
         // TODO
+
+## 0.6-SNAPSHOT
+
+    概述：资源文件加载和初始化策略优化
+
+    优化：
+        1. 暂无
+    新增：
+        1. 新增 Resource 资源对象，引入 ClassPath、URL、FileSystem，新增 BeanDefinitionReader 接口，目前支持 XML 文件解析
+    待修复:
+        1. 当类重写构造方法后，可能导致使用默认构造器 Bean 对象报错
+
+    本次改动设计类图：
+        // TODO
+    新增类对象说明：
+        // TODO

@@ -8,6 +8,7 @@ import top.jxau.support.bean.PropertyValue;
 import top.jxau.support.bean.PropertyValues;
 import top.jxau.support.instantiation.InstantiationStrategy;
 import top.jxau.support.instantiation.impl.CglibInstantiationStrategy;
+import top.jxau.support.processor.BeanPostProcessor;
 
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
@@ -16,7 +17,7 @@ import java.util.Map;
 /**
  * @author plutohh
  */
-public abstract class AbstractAutowireBeanFactory extends AbstractBeanFactory{
+public abstract class AbstractAutowireBeanFactory extends AbstractBeanFactory implements AutowireCapableBeanFactory{
 
     private InstantiationStrategy instantiationStrategy = new CglibInstantiationStrategy();
 
@@ -28,11 +29,51 @@ public abstract class AbstractAutowireBeanFactory extends AbstractBeanFactory{
         try {
             bean = createBeanInstance(beanName, beanDefinition, args);
             fillPropertyValues(beanName, bean, beanDefinition);
+            bean = initializeBean(beanName, bean, beanDefinition);
         } catch (Exception e) {
             throw new BeansException("Instantiation of bean failed: ", e);
         }
         addSingleton(beanName, bean);
         return (T) bean;
+    }
+
+    private Object initializeBean(String beanName, Object bean, BeanDefinition beanDefinition) {
+
+        Object wrappedBean = applyBeanPostProcessorsBeforeInitialization(bean, beanName);
+        invokeInitMethods(beanName, wrappedBean, beanDefinition);
+        wrappedBean = applyBeanPostProcessorsAfterInitialization(bean, beanName);
+
+        return wrappedBean;
+    }
+
+    private void invokeInitMethods(String beanName, Object wrappedBean, BeanDefinition beanDefinition) {
+        // TODO
+    }
+
+    @Override
+    public Object applyBeanPostProcessorsBeforeInitialization(Object existingBean, String beanName) {
+        Object result = existingBean;
+        for (BeanPostProcessor processor : getBeanPostProcessors()) {
+            Object current = processor.postProcessBeforeInitialization(result, beanName);
+            if (current == null) {
+                return result;
+            }
+            result = current;
+        }
+        return result;
+    }
+
+    @Override
+    public Object applyBeanPostProcessorsAfterInitialization(Object existingBean, String beanName) {
+        Object result = existingBean;
+        for (BeanPostProcessor processor : getBeanPostProcessors()) {
+            Object current = processor.postProcessAfterInitialization(result, beanName);
+            if (current == null) {
+                return result;
+            }
+            result = current;
+        }
+        return result;
     }
 
     private void fillPropertyValues(String beanName, Object bean, BeanDefinition beanDefinition) {

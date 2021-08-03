@@ -3,11 +3,17 @@ package top.jxau.support.factory;
 
 import top.jxau.support.bean.BeanDefinition;
 import top.jxau.registry.impl.DefaultSingletonBeanRegistry;
+import top.jxau.support.processor.BeanPostProcessor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author plutohh
  */
-public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry implements BeanFactory {
+public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry implements ConfigurableBeanFactory {
+
+    private final List<BeanPostProcessor> beanPostProcessorList = new ArrayList<>();
 
     @Override
     public <T> T getBean(String beanName, Object... args) {
@@ -17,6 +23,11 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
     @Override
     public <T> T getBean(String beanName) {
         return doGetBean(beanName, null);
+    }
+
+    @Override
+    public <T> T getBean(String beanName, Class<T> requiredType) {
+        return getBean(beanName);
     }
 
     protected <T> T doGetBean(String beanName, Object[] args) {
@@ -45,5 +56,13 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
      */
     protected abstract <T> T createBean(String beanName, BeanDefinition beanDefinition, Object[] args);
 
+    @Override
+    public void addBeanPostProcessor(BeanPostProcessor beanPostProcessor) {
+        this.beanPostProcessorList.remove(beanPostProcessor);
+        this.beanPostProcessorList.add(beanPostProcessor);
+    }
 
+    public List<BeanPostProcessor> getBeanPostProcessors() {
+        return this.beanPostProcessorList;
+    }
 }
