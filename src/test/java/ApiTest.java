@@ -6,9 +6,11 @@ import top.jxau.support.bean.BeanDefinition;
 import top.jxau.support.bean.BeanReference;
 import top.jxau.support.bean.PropertyValue;
 import top.jxau.support.bean.PropertyValues;
+import top.jxau.support.context.impl.ClassPathXmlApplicationContext;
 import top.jxau.support.core.io.Resource;
 import top.jxau.support.core.io.loader.DefaultResourceLoader;
 import top.jxau.support.factory.impl.DefaultBeanFactory;
+import top.jxau.support.factory.impl.DefaultListableBeanFactory;
 import top.jxau.support.xml.XmlBeanDefinitionReader;
 
 import java.io.IOException;
@@ -106,6 +108,30 @@ public class ApiTest {
         System.out.println("user: " + user.hashCode() + " username: " + user.getUsername() + " password: " + user.getPassword());
         UserService userService = beanFactory.getBean("userService", UserService.class);
         userService.queryUserInfo();
+    }
+
+    @Test
+    public void test_08() {
+        DefaultListableBeanFactory beanFactory = new DefaultListableBeanFactory();
+        XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(beanFactory);
+        reader.loadBeanDefinitions("classpath:spring.xml");
+
+        MyBeanFactoryPostProcessor beanFactoryPostProcessor = new MyBeanFactoryPostProcessor();
+        beanFactoryPostProcessor.postProcessBeanFactory(beanFactory);
+
+        MyBeanPostProcessor beanPostProcessor = new MyBeanPostProcessor();
+        beanFactory.addBeanPostProcessor(beanPostProcessor);
+
+        User user = beanFactory.getBean("user", User.class);
+        System.out.println(user);
+    }
+
+    @Test
+    public void test_09() {
+        ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:spring08.xml");
+
+        User user = applicationContext.getBean("user", User.class);
+        System.out.println(user);
     }
 
     private PropertyValues initCPropertyValues() {

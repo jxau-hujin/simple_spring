@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans>
+
+
+    <bean id="user" class="top.jxau.User">
+        <property name="username" value="tencent"/>
+        <property name="password" value="jd"/>
+    </bean>
+
+    <bean class="top.jxau.MyBeanPostProcessor"/>
+    <bean class="top.jxau.MyBeanFactoryPostProcessor"/>
+
+</beans>
