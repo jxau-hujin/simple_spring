@@ -3,7 +3,7 @@ package top.jxau.support.context;
 /**
  * @author plutohh
  */
-public interface ConfigurableApplicationContext extends ApplicationContext {
+public interface ConfigurableApplicationContext extends ApplicationContext, ApplicationEventPublisher {
 
     /**
      * 刷新容器

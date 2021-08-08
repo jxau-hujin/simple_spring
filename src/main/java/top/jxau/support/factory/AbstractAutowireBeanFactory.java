@@ -33,7 +33,7 @@ public abstract class AbstractAutowireBeanFactory extends AbstractBeanFactory im
             fillPropertyValues(beanName, bean, beanDefinition);
             bean = initializeBean(beanName, bean, beanDefinition);
         } catch (Exception e) {
-            throw new BeansException("Instantiation of bean failed: ", e);
+            throw new BeansException("Instantiation of bean failed: " + beanName  + " ", e);
         }
 
         registerDisposableBeanIfNecessary(beanName, bean, beanDefinition);
