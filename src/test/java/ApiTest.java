@@ -169,6 +169,14 @@ public class ApiTest {
         System.out.println(testService2.queryInfo("2"));
     }
 
+    @Test
+    public void test_14() {
+        ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:spring.xml");
+        applicationContext.publishEvent(new MsgEvent(applicationContext, 1019129009086763L, "成功了！"));
+
+        applicationContext.registerShutdownHook();
+    }
+
     private PropertyValues initCPropertyValues() {
 
         PropertyValues propertyValues = new PropertyValues();

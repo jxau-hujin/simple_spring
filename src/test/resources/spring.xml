@@ -32,5 +32,10 @@
 
     <bean id="testService" class="top.jxau.ProxyBeanFactory" scope="prototype"/>
 
+    <bean class="top.jxau.MsgEventListener"/>
+
+    <bean class="top.jxau.ContextClosedEventListener"/>
+
+    <bean class="top.jxau.ContextRefreshedEventListener"/>
 
 </beans>
