@@ -154,9 +154,19 @@ public class ApiTest {
     public void test_12() {
         ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:spring.xml");
 
-
         AwareBean awareBean = applicationContext.getBean("awareBean", AwareBean.class);
         System.out.println(awareBean.toString());
+    }
+
+    @Test
+    public void test_13() {
+        ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:spring.xml");
+
+        TestService testService1 = applicationContext.getBean("testService", TestService.class);
+        TestService testService2 = applicationContext.getBean("testService", TestService.class);
+
+        System.out.println(testService1.queryInfo("1"));
+        System.out.println(testService2.queryInfo("2"));
     }
 
     private PropertyValues initCPropertyValues() {

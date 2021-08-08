@@ -26,7 +26,11 @@
     <bean id="userService" class="top.jxau.UserService" />
 
 
-    <bean id="userDao" class="top.jxau.UserDao" init-method="init" destroy-method="destroy"/>
+<!--    <bean id="userDao" class="top.jxau.UserDao" init-method="init" destroy-method="destroy" scope="prototype"/>-->
 
     <bean id="awareBean" class="top.jxau.AwareBean"/>
+
+    <bean id="testService" class="top.jxau.ProxyBeanFactory" scope="prototype"/>
+
+
 </beans>

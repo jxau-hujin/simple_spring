@@ -9,6 +9,10 @@ import top.jxau.support.processor.BeanPostProcessor;
  */
 public interface ConfigurableBeanFactory extends BeanFactory, SingletonBeanRegistry {
 
+    String SCOPE_SINGLETON = "singleton";
+
+    String SCOPE_PROTOTYPE = "prototype";
+
     /**
      * 添加 BeanPostProcessor
      * @param beanPostProcessor
