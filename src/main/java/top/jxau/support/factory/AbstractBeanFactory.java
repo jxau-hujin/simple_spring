@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * @author plutohh
  */
-public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry implements ConfigurableBeanFactory {
+public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport implements ConfigurableBeanFactory {
 
     private ClassLoader beanClassLoader = ClassUtils.getDefaultClassLoader();
 
@@ -36,18 +36,34 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
     protected <T> T doGetBean(String beanName, Object[] args) {
         Object bean = getSingleton(beanName);
         if(bean != null) {
-            return (T) bean;
+            return (T) getObjectForBeanInstance(bean, beanName);
         }
 
         BeanDefinition beanDefinition = getBeanDefinition(beanName);
-        return createBean(beanName, beanDefinition, args);
+        Object instance = createBean(beanName, beanDefinition, args);
+        return getObjectForBeanInstance(instance, beanName);
     }
 
-    /**
-     * 根据 BeanName 获取 BeanDefinition
-     * @param beanName
-     * @return
-     */
+    private <T> T getObjectForBeanInstance(Object beanInstance, String beanName) {
+        if (!(beanInstance instanceof FactoryBean)) {
+            return (T) beanInstance;
+        }
+
+        Object object = getCachedObjectForFactoryBean(beanName);
+
+        if (object == null) {
+            FactoryBean factoryBean = (FactoryBean) beanInstance;
+            object = getObjectFromFactoryBean(factoryBean, beanName);
+        }
+
+        return (T) object;
+    }
+
+        /**
+         * 根据 BeanName 获取 BeanDefinition
+         * @param beanName
+         * @return
+         */
     protected abstract BeanDefinition getBeanDefinition(String beanName);
 
     /**
